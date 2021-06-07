@@ -1,0 +1,19 @@
+{% extends 'base/base.html' %}
+
+{% load bootstrap5 %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Add task</h1>
+        <h3><a href="{% url 'olymp-main' %}" class="text-decoration-none">To the menu</a></h3>
+        <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
+    </div>
+
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form add_task_form %}
+        <button type="submit" class="btn btn-success w-100">
+            Add
+        </button>
+    </form>
+{% endblock %}

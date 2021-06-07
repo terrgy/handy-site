@@ -1,0 +1,28 @@
+{% load bootstrap5 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <title>{{ page_name }}</title>
+
+    {% bootstrap_css %}
+    {% block extra_css %}{% endblock %}
+</head>
+<body>
+
+    <div class="position-relative container">
+        {% include 'base/messages/messages_block.html' %}
+        <main role="main">
+            {% block content %}{% endblock %}
+        </main>
+    </div>
+
+
+    {% bootstrap_javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/messages.js' %}"></script>
+    {% block extra_js %}{% endblock %}
+</body>
+</html>

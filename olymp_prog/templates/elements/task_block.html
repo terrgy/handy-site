@@ -1,0 +1,8 @@
+<div class="text-center">
+    <h2>{{ task.title }} #{{ task.pk }}</h2>
+    <p>{{ task.description }}</p>
+    {% if task.link %}
+        <a href="{{ task.link }}">Testing system</a>
+    {% endif %}
+</div>
+

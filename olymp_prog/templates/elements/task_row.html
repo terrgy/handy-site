@@ -1,0 +1,4 @@
+<tr style="cursor: pointer;" onclick="location.href = '{% url 'olymp-task_view' task.pk %}'">
+    <th scope="row">{{ task.pk }}</th>
+    <td>{{ task.title|truncatechars:20 }}</td>
+</tr>

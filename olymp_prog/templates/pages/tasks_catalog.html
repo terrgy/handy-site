@@ -1,0 +1,23 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Tasks catalog</h1>
+        <h3><a href="{% url 'olymp-main' %}" class="text-decoration-none">To the menu</a></h3>
+        <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
+    </div>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th scope="col">#</th>
+                <th scope="col">Title</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for task in tasks %}
+                {% include 'elements/task_row.html' %}
+            {% endfor %}
+        </tbody>
+    </table>
+{% endblock %}

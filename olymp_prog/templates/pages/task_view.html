@@ -1,0 +1,11 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Task viewer</h1>
+        <h3><a href="{% url 'olymp-main' %}" class="text-decoration-none">To the menu</a></h3>
+        <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
+    </div>
+
+    {% include 'elements/task_block.html' %}
+{% endblock %}

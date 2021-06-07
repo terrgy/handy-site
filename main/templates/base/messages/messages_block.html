@@ -1,0 +1,7 @@
+<div id="messages_block" class="position-absolute w-100" style="top: 10%;">
+    {% if messages %}
+      {% for message in messages %}
+        {% include 'base/messages/single_message_block.html' %}
+      {% endfor %}
+    {% endif %}
+</div>

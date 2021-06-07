@@ -1,0 +1,10 @@
+{% extends 'base/base.html' %}
+
+{% block content %}
+    <h1 class="text-center">Sports programming</h1>
+    <div class="d-grid gap-2 col-6 mx-auto">
+        <a href="{% url 'olymp-tasks_catalog' %}" class="btn btn-primary" type="button">Tasks catalog</a>
+        <a href="" class="btn btn-primary" type="button">Quick training</a>
+        <a href="{% url 'olymp-add_task' %}" class="btn btn-primary" type="button">Add task</a>
+    </div>
+{% endblock %}
