@@ -1,0 +1,52 @@
+{% load static %}
+
+<div class="tags-select mb-3">
+    <div class="d-flex align-items-center position-relative">
+        <div class="selected-tags d-flex">
+            {% for option in field %}
+                {% if option.data.selected %}
+                    <div class="selected-tag" data-value="{{ option.data.value }}">
+                        <span class="badge rounded-pill bg-primary tag me-1">
+                            {{ option.data.label }}
+                        </span>
+                        <img src="{% static 'img/trash_icon.png' %}" class='tag-trash-btn' width="10" alt="trash icon">
+                    </div>
+                {% endif %}
+            {% endfor %}
+        </div>
+        <div class="btn btn-outline-primary toggle-tags-selection-window-btn">+</div>
+
+        <div class="tags-selection-window border p-2 mt-2 shadow-sm position-absolute bg-light overflow-scroll"
+             style="display: none; top: 40px; height: 150px; width: 35%;">
+            <button type="button" class="btn-close toggle-tags-selection-window-btn position-absolute end-0 top-0"
+                    aria-label="Close"></button>
+            <div class="w-100 d-flex">
+                <input type="text" class="form-control" name="tag-name">
+                <div class="btn btn-primary add-new-tag-btn ms-1 me-3" data-href="{% url 'olymp-add_tag' %}">Добавить
+                </div>
+            </div>
+            <div class="not-selected-tags">
+                {% for option in field %}
+                    {% if not option.data.selected %}
+                        <div class="not-selected-tag" data-value="{{ option.data.value }}">
+                            <span class="badge rounded-pill bg-primary tag me-1">
+                                {{ option.data.label }}
+                            </span>
+                            <img src="{% static 'img/trash_icon.png' %}" class='tag-trash-btn' width="10"
+                                 alt="trash icon">
+                        </div>
+                    {% endif %}
+                {% endfor %}
+            </div>
+
+        </div>
+    </div>
+
+    <div class="tags-select-input" style="display: none;">
+        {{ field }}
+    </div>
+</div>
+<script>
+    let delete_tag_url = '{% url 'olymp-delete_tag' %}'
+    let trash_icon_url = '{% static 'img/trash_icon.png' %}'
+</script>

@@ -1,0 +1,12 @@
+.tag, .tag-trash-btn {
+    cursor: pointer;
+}
+
+.selected-tag .tag-trash-btn {
+    display: none;
+}
+
+.not-selected-tag .tag-trash-btn {
+    display: inline;
+}
+

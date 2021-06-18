@@ -1,0 +1,29 @@
+{% extends 'base/olymp_base.html' %}
+
+{% block content %}
+    <div class="text-center">
+        <h1>Training</h1>
+        <h3><a href="{% url 'olymp-main' %}" class="text-decoration-none">To the menu</a></h3>
+        <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
+    </div>
+
+    {% if status == 'started' %}
+        {% with task=current_task %}
+            {% include 'elements/task_block.html' %}
+        {% endwith %}
+        <div class="row mt-5">
+            <div class="col-6">
+                <a href="{% url 'olymp-end_training' %}" class="btn btn-danger w-100 action-btn" id="end_training_btn">End
+                    training</a>
+            </div>
+            <div class="col-6">
+                <a href="{% url 'olymp-next_task' %}" class="btn btn-success w-100 action-btn" id="next_task_btn">Next
+                    task</a>
+            </div>
+        </div>
+    {% else %}
+        <h3 class="text-center">Training ended</h3>
+    {% endif %}
+
+
+{% endblock %}
