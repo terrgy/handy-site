@@ -22,7 +22,9 @@
 
     {% bootstrap_javascript %}
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="{% static 'js/cookie.js' %}"></script>
     <script src="{% static 'js/messages.js' %}"></script>
+    <script src="{% static 'js/ajax.js' %}"></script>
     {% block extra_js %}{% endblock %}
 </body>
 </html>

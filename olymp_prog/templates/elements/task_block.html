@@ -1,8 +1,40 @@
-<div class="text-center">
-    <h2>{{ task.title }} #{{ task.pk }}</h2>
-    <p>{{ task.description }}</p>
-    {% if task.link %}
-        <a href="{{ task.link }}">Testing system</a>
-    {% endif %}
+<div class="row">
+    <div class="col-6 text-center">
+        <h2>{{ task.title }} #{{ task.pk }}</h2>
+        <p>{{ task.description }}</p>
+    </div>
+    <div class="col-6">
+        <ul class="list-group">
+            {% if task.link %}
+                <li class="list-group-item d-flex">
+                    <div class="w-50">Testing system:</div>
+                    <strong><a href="{{ task.link }}" target="_blank">Click here!</a></strong>
+                </li>
+            {% endif %}
+            <li class="list-group-item d-flex">
+                <div class="w-50">Solutions count:</div>
+                <strong>{{ task.solutions_count }}</strong>
+            </li>
+            <li class="list-group-item d-flex">
+                <div class="w-50">Last solution:</div>
+                <strong>{{ task.last_solution|date:'d.m.Y H:i' }}</strong>
+            </li>
+            <li class="list-group-item d-flex">
+                <div class="w-50">Last try:</div>
+                <strong>{{ task.last_try|date:'d.m.Y H:i' }}</strong>
+            </li>
+        </ul>
+    </div>
 </div>
+{% if task.nav_bar %}
+    <div class="row mt-3">
+        <div class="col-6">
+            <a href="{% url 'olymp-try_to_solve_task' task.pk %}" class="btn btn-warning w-100 action-btn" id="task_try_to_solve_btn">Attempt to solve</a>
+        </div>
+        <div class="col-6">
+            <a href="{% url 'olymp-solve_task' task.pk %}" class="btn btn-success w-100 action-btn" id="task_solve_btn">Solve</a>
+        </div>
+    </div>
+{% endif %}
+
 

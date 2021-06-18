@@ -137,7 +137,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 STATICFILES_DIRS = [
-    BASE_DIR / 'static_dev',
+    BASE_DIR / 'main/static_dev',
+    BASE_DIR / 'olymp_prog/static_dev'
 ]
 
 # Auth

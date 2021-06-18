@@ -3,7 +3,7 @@ from django.contrib.admin.views.decorators import staff_member_required
 from django.shortcuts import render, redirect, get_object_or_404
 
 from olymp_prog.forms import TaskForm
-from olymp_prog.models import Task
+from olymp_prog.models import Task, Training
 
 
 @staff_member_required()
@@ -50,3 +50,30 @@ def task_view_page(request, task_id):
         'task': task,
     }
     return render(request, 'pages/task_view.html', context)
+
+
+@staff_member_required()
+def training_page(request):
+    try:
+        training = Training.objects.get(user=request.user)
+    except Training.DoesNotExist:
+        return redirect('olymp-main')
+    task = None
+    if training.check_status('started'):
+        task = training.get_current_task()
+    context = {
+        'page_name': 'Training',
+        'status': training.get_status(),
+    }
+    if context['status'] == 'started':
+        task.enable_nav_bar()
+        context['current_task'] = task
+    return render(request, 'pages/training.html', context)
+
+
+@staff_member_required()
+def start_new_training_page(request):
+    context = {
+        'page_name': 'Start new training',
+    }
+    return render(request, 'pages/start_new_training.html', context)
