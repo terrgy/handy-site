@@ -1,6 +1,6 @@
-from django.db import models
 import random
 
+from django.db import models
 from django.utils import timezone
 
 from main.models import User
@@ -33,6 +33,7 @@ class Tag(models.Model):
 
 class Task(models.Model):
     _total_tasks = -1
+    shuffle_methods = []
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -47,6 +48,7 @@ class Task(models.Model):
         max_length=1000,
         help_text='Full description of the task',
         verbose_name='description',
+        blank=True,
     )
     link = models.URLField(
         help_text='URL to the testing system with the task',
@@ -72,6 +74,7 @@ class Task(models.Model):
         to=Tag,
         related_name='tags',
         help_text='Tags to this task',
+        blank=True,
     )
 
     def enable_nav_bar(self):
@@ -101,9 +104,66 @@ class Task(models.Model):
             cls._total_tasks = Task.objects.count()
         return cls._total_tasks
 
+    @classmethod
+    def filter_tasks(cls, tasks=None, **kwargs):
+        if tasks is None:
+            tasks = cls.objects.all()
+        if ('tags' in kwargs) and kwargs['tags']:
+            tasks = tasks.filter(tags__in=kwargs['tags'])
+        if ('title' in kwargs) and kwargs['title']:
+            tasks = tasks.filter(title__contains=kwargs['title'])
+        if ('link' in kwargs) and kwargs['link']:
+            tasks = tasks.exclude(link='').filter(link__isnull=False)
+        return tasks
+
+    @classmethod
+    def simple_shuffle(cls, tasks=None):
+        if tasks is None:
+            tasks = cls.objects.all()
+        permutation = [
+            task
+            for task in tasks
+        ]
+        random.shuffle(permutation)
+        return permutation
+
+    @classmethod
+    def latest_solve_priority_shuffle(cls, tasks=None):
+        if tasks is None:
+            tasks = cls.objects.all()
+        tasks = tasks.order_by('last_solution')
+        permutation = [
+            task
+            for task in tasks
+        ]
+        block_size = max(int(len(permutation) * 0.05), 5)
+        for i in range(0, len(permutation), block_size):
+            tasks_slice = permutation[i: i + block_size]
+            random.shuffle(tasks_slice)
+            for j in range(len(tasks_slice)):
+                permutation[i + j] = tasks_slice[j]
+        return permutation
+
+    @classmethod
+    def get_shuffle_methods_choices(cls):
+        return [
+            (i, cls.shuffle_methods[i][0])
+            for i in range(len(cls.shuffle_methods))
+        ]
+
+    @classmethod
+    def get_shuffle_method(cls, index=0):
+        return cls.shuffle_methods[index][1]
+
     class Meta:
         verbose_name = 'Task'
         verbose_name_plural = 'Tasks'
+
+
+Task.shuffle_methods = [
+    ('Simple shuffle', Task.simple_shuffle),
+    ('Latest solve priority', Task.latest_solve_priority_shuffle),
+]
 
 
 class Training(models.Model):
@@ -154,20 +214,17 @@ class Training(models.Model):
         self.save()
 
     @classmethod
-    def start_new_training(cls, request):
+    def start_new_training(cls, request, tasks=None):
         try:
             cls.objects.get(user=request.user).delete()
         except cls.DoesNotExist:
             pass
 
-        permutation = [
-            task
-            for task in Task.objects.all()
-        ]
-        random.shuffle(permutation)
+        if tasks is None:
+            tasks = Task.objects.all()
 
         new_training = cls.objects.create(user=request.user)
-        for task in permutation:
+        for task in tasks:
             TrainingTask.objects.create(training=new_training, task=task)
         return new_training
 

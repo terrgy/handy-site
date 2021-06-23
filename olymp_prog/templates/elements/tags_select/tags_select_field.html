@@ -1,0 +1,25 @@
+{% extends 'elements/tags_select/tags_select_base.html' %}
+
+{% block selected_tags %}
+    {% for option in field %}
+        {% if option.data.selected %}
+            {% with tag_value=option.data.value tag_name=option.data.label %}
+                {% include 'elements/tags_select/tags_select_selected_pill.html' %}
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block not_selected_tags %}
+    {% for option in field %}
+        {% if not option.data.selected %}
+            {% with tag_value=option.data.value tag_name=option.data.label %}
+                {% include 'elements/tags_select/tags_select_not_selected_pill.html' %}
+            {% endwith %}
+        {% endif %}
+    {% endfor %}
+{% endblock %}
+
+{% block tags_select_input %}
+    {{ field }}
+{% endblock %}

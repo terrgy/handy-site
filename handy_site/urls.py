@@ -14,17 +14,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
+from django.contrib.auth import views as auth_views
 from django.urls import path, include
 
 from main import views as main_views
 from olymp_prog import views as olymp_views, ajax_views as olymp_ajax_views
-from django.contrib.auth import views as auth_views
 
 # url - /olymp/task/<task_id>/...
 task_urls = [
     path('', olymp_views.task_view_page, name='olymp-task_view'),
     path('solve/', olymp_ajax_views.solve_task_request, name='olymp-solve_task'),
-    path('try-to-solve-task', olymp_ajax_views.try_to_solve_task_request, name='olymp-try_to_solve_task'),
+    path('try-to-solve-task/', olymp_ajax_views.try_to_solve_task_request, name='olymp-try_to_solve_task'),
+    path('edit/', olymp_views.task_edit_page, name='olymp-task_edit'),
+    path('delete/', olymp_ajax_views.delete_task_request, name='olymp-delete_task'),
 ]
 
 # url - /olymp/ajax/...

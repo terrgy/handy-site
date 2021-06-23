@@ -3,16 +3,8 @@
 <div class="tags-select mb-3">
     <div class="d-flex align-items-center position-relative">
         <div class="selected-tags d-flex">
-            {% for option in field %}
-                {% if option.data.selected %}
-                    <div class="selected-tag" data-value="{{ option.data.value }}">
-                        <span class="badge rounded-pill bg-primary tag me-1">
-                            {{ option.data.label }}
-                        </span>
-                        <img src="{% static 'img/trash_icon.png' %}" class='tag-trash-btn' width="10" alt="trash icon">
-                    </div>
-                {% endif %}
-            {% endfor %}
+            {% block selected_tags %}
+            {% endblock %}
         </div>
         <div class="btn btn-outline-primary toggle-tags-selection-window-btn">+</div>
 
@@ -26,24 +18,15 @@
                 </div>
             </div>
             <div class="not-selected-tags">
-                {% for option in field %}
-                    {% if not option.data.selected %}
-                        <div class="not-selected-tag" data-value="{{ option.data.value }}">
-                            <span class="badge rounded-pill bg-primary tag me-1">
-                                {{ option.data.label }}
-                            </span>
-                            <img src="{% static 'img/trash_icon.png' %}" class='tag-trash-btn' width="10"
-                                 alt="trash icon">
-                        </div>
-                    {% endif %}
-                {% endfor %}
+                {% block not_selected_tags %}
+                {% endblock %}
             </div>
-
         </div>
     </div>
 
     <div class="tags-select-input" style="display: none;">
-        {{ field }}
+        {% block tags_select_input %}
+        {% endblock %}
     </div>
 </div>
 <script>

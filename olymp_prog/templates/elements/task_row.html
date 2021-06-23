@@ -1,4 +1,14 @@
-<tr style="cursor: pointer;" onclick="location.href = '{% url 'olymp-task_view' task.pk %}'">
-    <th scope="row">{{ task.pk }}</th>
-    <td>{{ task.title|truncatechars:20 }}</td>
+<tr>
+    <th scope="row" onclick="location.href = '{% url 'olymp-task_view' task.pk %}'"
+        class="task-row-href">{{ task.pk }}</th>
+    <td onclick="location.href = '{% url 'olymp-task_view' task.pk %}'"
+        class="task-row-href">{{ task.title|truncatechars:20 }}</td>
+    <td onclick="location.href = '{% url 'olymp-task_view' task.pk %}'" class="task-row-href">
+        {% for tag in task.tags.all %}
+            <span class="badge rounded-pill bg-primary me-1">
+                {{ tag }}
+            </span>
+        {% endfor %}
+    </td>
+    <td><a href="{% url 'olymp-task_edit' task.pk %}">Edit</a></td>
 </tr>

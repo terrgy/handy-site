@@ -1,5 +1,7 @@
 {% extends 'base/olymp_base.html' %}
 
+{% load bootstrap5 %}
+
 {% block content %}
     <div class="text-center">
         <h1>Tasks catalog</h1>
@@ -7,15 +9,35 @@
         <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
     </div>
 
+    <div class="mb-3">
+        <h3>Task filter</h3>
+        <form action="" method="POST">
+            {% csrf_token %}
+            {% for field in task_filter_form %}
+                {% if field.name == 'tags' %}
+                    {% include 'elements/tags_select/tags_select_field.html' %}
+                {% else %}
+                    {% bootstrap_field field %}
+                {% endif %}
+            {% endfor %}
+            <button type="submit" class="btn btn-success w-100">
+                Search
+            </button>
+        </form>
+    </div>
+
+
     <table class="table">
         <thead>
-            <tr>
-                <th scope="col">#</th>
-                <th scope="col">Title</th>
-            </tr>
+        <tr>
+            <th scope="col">#</th>
+            <th scope="col">Title</th>
+            <th scope="col">Tags</th>
+            <th scope="col"></th>
+        </tr>
         </thead>
         <tbody>
-            {% for task in tasks %}
+        {% for task in tasks %}
                 {% include 'elements/task_row.html' %}
             {% endfor %}
         </tbody>

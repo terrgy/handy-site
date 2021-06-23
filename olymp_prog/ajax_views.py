@@ -14,7 +14,8 @@ from olymp_prog.models import Training, Task, Tag
 def start_training_request(request):
     if request.method != 'POST':
         raise PermissionDenied
-    Training.start_new_training(request)
+    tasks = Task.get_shuffle_method()()
+    Training.start_new_training(request, tasks)
     return get_json_response(request, redirect=reverse('olymp-training'))
 
 
@@ -109,3 +110,11 @@ def get_tags_request(request):
     if request.method != 'POST':
         raise PermissionDenied
     return get_json_response(request, tags=Tag.get_all_tags_list())
+
+
+@staff_member_required()
+def delete_task_request(request, task_id):
+    if request.method != 'POST':
+        raise PermissionDenied
+    get_object_or_404(Task, pk=task_id).delete()
+    return get_json_response(request, redirect=reverse('olymp-tasks_catalog'))

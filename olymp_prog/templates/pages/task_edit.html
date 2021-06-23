@@ -4,14 +4,14 @@
 
 {% block content %}
     <div class="text-center">
-        <h1>Add task</h1>
+        <h1>Task edit</h1>
         <h3><a href="{% url 'olymp-main' %}" class="text-decoration-none">To the menu</a></h3>
-        <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
+        <h3><a href="{% url 'olymp-tasks_catalog' %}" class="text-decoration-none">To the catalog</a></h3>
+        <h3><a href="{% url 'olymp-task_view' task.pk %}" class="text-decoration-none">To the task view</a></h3>
     </div>
-
     <form action="" method="POST">
         {% csrf_token %}
-        {% for field in add_task_form %}
+        {% for field in edit_form %}
             {% if field.name == 'tags' %}
                 {% include 'elements/tags_select/tags_select_field.html' %}
             {% else %}
@@ -19,7 +19,8 @@
             {% endif %}
         {% endfor %}
         <button type="submit" class="btn btn-success w-100">
-            Add
+            Save
         </button>
     </form>
+    <a href="{% url 'olymp-delete_task' task.pk %}" class="btn btn-danger w-100 mt-3 action-btn">Delete task</a>
 {% endblock %}

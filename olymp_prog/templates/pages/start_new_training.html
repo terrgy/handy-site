@@ -1,5 +1,7 @@
 {% extends 'base/olymp_base.html' %}
 
+{% load bootstrap5 %}
+
 {% block content %}
     <div class="text-center">
         <h1>Start new training</h1>
@@ -7,6 +9,18 @@
         <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Back</a></h3>
     </div>
 
-
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% for field in settings_form %}
+            {% if field.name == 'tags' %}
+                {% include 'elements/tags_select/tags_select_field.html' %}
+            {% else %}
+                {% bootstrap_field field %}
+            {% endif %}
+        {% endfor %}
+        <button type="submit" class="btn btn-success w-100">
+            Start
+        </button>
+    </form>
 
 {% endblock %}

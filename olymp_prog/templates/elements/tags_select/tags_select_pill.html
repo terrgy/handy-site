@@ -1,0 +1,8 @@
+{% load static %}
+
+<div class="{% block tag_classes %}{% endblock %}" data-value="{{ tag_value }}">
+    <span class="badge rounded-pill bg-primary tag me-1">
+        {{ tag_name }}
+    </span>
+    <img src="{% static 'img/trash_icon.png' %}" class='tag-trash-btn' width="10" alt="trash icon">
+</div>
