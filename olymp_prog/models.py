@@ -55,6 +55,10 @@ class Task(models.Model):
         verbose_name='link',
         blank=True,
     )
+    attempts_count = models.IntegerField(
+        help_text='Number of solution attempts to this task',
+        default=0,
+    )
     solutions_count = models.IntegerField(
         help_text='Number of successful solutions to this task',
         verbose_name='Solutions count',
@@ -69,6 +73,10 @@ class Task(models.Model):
         help_text='Time of last solution attempt (successful or not)',
         verbose_name='last try',
         default=timezone.now,
+    )
+    notes = models.TextField(
+        help_text='Additional info about task',
+        blank=True,
     )
     tags = models.ManyToManyField(
         to=Tag,
@@ -86,7 +94,13 @@ class Task(models.Model):
     def is_solved(self) -> bool:
         return self.solutions_count > 0
 
+    def solution_rating(self) -> float:
+        if self.attempts_count:
+            return self.solutions_count * 100 / self.attempts_count
+        return 0.0
+
     def try_to_solve(self, save: bool = True):
+        self.attempts_count += 1
         self.last_try = timezone.now()
         if save:
             self.save()

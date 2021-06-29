@@ -8,7 +8,12 @@
             <span class="badge rounded-pill bg-primary me-1">
                 {{ tag }}
             </span>
+        {% empty %}
+            -
         {% endfor %}
+    </td>
+    <td onclick="location.href = '{% url 'olymp-task_view' task.pk %}'"
+        class="task-row-href">{{ task.solution_rating|floatformat }}%
     </td>
     <td><a href="{% url 'olymp-task_edit' task.pk %}">Edit</a></td>
 </tr>

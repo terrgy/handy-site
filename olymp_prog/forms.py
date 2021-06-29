@@ -6,7 +6,7 @@ from olymp_prog.models import Task, Tag
 class TaskForm(forms.ModelForm):
     class Meta:
         model = Task
-        fields = ['title', 'description', 'link', 'tags']
+        fields = ['title', 'description', 'link', 'tags', 'notes', ]
 
 
 class TaskFilterForm(forms.Form):

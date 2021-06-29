@@ -1,12 +1,24 @@
 <div class="row">
     <div class="col-6 text-center">
-        <h2>{{ task.title }} #{{ task.pk }}</h2>
+        <h2><a class="text-decoration-none" href="{% url 'olymp-task_edit' task.pk %}">{{ task.title }}</a>
+            #{{ task.pk }}</h2>
         <p>{{ task.description }}</p>
-        {% for tag in task.tags.all %}
-            <span class="badge rounded-pill bg-primary me-1">
-                {{ tag }}
-            </span>
-        {% endfor %}
+        <p>
+            {% for tag in task.tags.all %}
+                <span class="badge rounded-pill bg-primary me-1">
+                    {{ tag }}
+                </span>
+            {% endfor %}
+        </p>
+        <a class="btn btn-primary" href="#notes-collapse" data-bs-toggle="collapse" role="button" aria-expanded="false"
+           aria-controls="notes-collapse">
+            Toggle notes
+        </a>
+        <div class="collapse mt-2" id="notes-collapse">
+            <p>
+                {{ task.notes }}
+            </p>
+        </div>
     </div>
     <div class="col-6">
         <ul class="list-group">
@@ -17,8 +29,16 @@
                 </li>
             {% endif %}
             <li class="list-group-item d-flex">
+                <div class="w-50">Attempts count:</div>
+                <strong>{{ task.attempts_count }}</strong>
+            </li>
+            <li class="list-group-item d-flex">
                 <div class="w-50">Solutions count:</div>
                 <strong>{{ task.solutions_count }}</strong>
+            </li>
+            <li class="list-group-item d-flex">
+                <div class="w-50">Solution rating:</div>
+                <strong>{{ task.solution_rating|floatformat }}%</strong>
             </li>
             <li class="list-group-item d-flex">
                 <div class="w-50">Last solution:</div>
