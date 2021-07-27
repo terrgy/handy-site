@@ -94,8 +94,12 @@ WSGI_APPLICATION = 'handy_site.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'handy_site_db',
+        'USER': 'handy_site_user',
+        'PASSWORD': '0MLp~|4p?W%?hnioBehV',
+        'HOST': 'localhost',
+        'PORT': '3306',
     }
 }
 
