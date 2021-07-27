@@ -38,7 +38,7 @@ DEBUG = True
 
 ALLOWED_HOSTS = [
     '82.146.48.107',
-    'terrg.xyz',
+    'www.terrg.xyz',
 ]
 
 
