@@ -65,9 +65,16 @@ auth_urls = [
     path('logout/', auth_views.LogoutView.as_view(), name='logout'),
 ]
 
+# url - /fuck-off/...
+fuck_off_urls = [
+    path('', main_views.fuck_off, name='fuck_off_page'),
+    path('ru/', main_views.fuck_off_ru, name='fuck_off_ru_page'),
+]
+
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('', main_views.index_page, name='index'),
     path('olymp/', include(olymp_urls)),
     path('auth/', include(auth_urls)),
+    path('fuck-off/', include(fuck_off_urls)),
 ]
