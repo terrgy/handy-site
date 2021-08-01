@@ -1,0 +1,28 @@
+{% extends 'base/base.html' %}
+
+{% block extra_css %}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Oswald&display=swap" rel="stylesheet">
+{% endblock %}
+
+{% block content %}
+    <div class="row justify-content-center mt-5">
+        <div class="col-6">
+            <div class="card text-center" style="font-family: 'Oswald', sans-serif;">
+                <div class="card-header">WELCOME</div>
+                <div class="card-body">
+                    <h1 class="card-title">GET OUT</h1>
+                    <p class="card-text">
+                        I'm serious, get the fuck off my site
+                    </p>
+                    <a class="btn btn-primary" href="https://www.google.com/">QUIT</a>
+                </div>
+                <div class="card-footer text-muted">
+                    Не понимаете по-английски?
+                    <a href="{% url 'fuck_off_ru_page' %}" class="text-muted">Перейти на версию по-русски</a>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
