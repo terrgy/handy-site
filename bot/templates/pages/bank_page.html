@@ -1,0 +1,44 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-12">
+            <h1 class="text-center">Банк:</h1>
+            <h2 class="text-center">{{ bank_sum }}</h2>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-6">
+            <h2 class="text-center">Внесено:</h2>
+            <h3 class="text-center text-danger">{{ settings.get_bank_intake }}</h3>
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">Доля:</h2>
+            <h3 class="text-center text-success">{{ settings.get_bank_profit }}</h3>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-8 mx-auto">
+            <h2 class="text-center">История внесений</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Пользователь</th>
+                    <th scope="col">Время</th>
+                    <th scope="col">Кредиты</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for bank_record in bank_records %}
+                    <td>{{ bank_record.user_bot_settings.user.username }}</td>
+                    <td>{{ bank_record.time|date:"H:i d.m.Y" }}</td>
+                    <td class="text-danger">{{ bank_record.value }}</td>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not bank_records %}
+                <p class="text-center">Пока никто не накосячил :)</p>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

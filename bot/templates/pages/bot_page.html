@@ -1,0 +1,38 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-6">
+            {% if session %}
+                <h2>Бот идет</h2>
+                <h3>Начало: {{ session.start_time|date:"H:i d.m.Y" }}</h3>
+                <button class="btn btn-warning action-btn" href="{% url 'bot-ajax-end_session' %}">Закончить бот
+                </button>
+            {% else %}
+                <button class="btn btn-success action-btn" href="{% url 'bot-ajax-start_bot_session' %}">Начать бот!
+                </button>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">Другие ботальщики</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Пользователь</th>
+                    <th scope="col">Начало</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for other_session in other_sessions %}
+                    <td>{{ other_session.user_bot_settings.user.username }}</td>
+                    <td>{{ other_session.start_time|date:"H:i d.m.Y" }}</td>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not other_sessions %}
+                <p class="text-center">Больше никто не ботает :(</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}

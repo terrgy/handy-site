@@ -1,0 +1,25 @@
+{% extends 'base/bot_base.html' %}
+
+{% load static %}
+
+{% block content %}
+    <button class="btn btn-success action-btn" href="{% url 'bot-ajax-submit_check' %}">Подтвердить присутствие</button>
+{% endblock %}
+
+{% block extra_js %}
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/howler/2.1.1/howler.min.js"></script>
+
+    <script>
+        let sound = new Howl({
+            src: ['{% static 'sounds/alarm.mp3' %}'],
+            autoplay: true,
+            loop: true,
+            volume: 0.7
+        })
+    </script>
+
+    <script type="text/javascript">
+        check_updater_url = '{% url 'bot-ajax-check_update' %}';
+    </script>
+    <script src="{% static 'js/submit_check.js' %}"></script>
+{% endblock %}

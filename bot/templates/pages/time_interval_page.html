@@ -1,0 +1,48 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-6">
+            {% if time_interval %}
+                <h2>Отчетный период идет</h2>
+                <h3>Начало: {{ time_interval.start_time|date:"H:i d.m.Y" }}</h3>
+                <h3>Конец: {{ time_interval.end_time|date:"H:i d.m.Y" }}</h3>
+                <h3>Прогресс: {{ time_interval.count_completed_hours }}/{{ time_interval.hours_target }}</h3>
+
+                <button class="btn btn-warning action-btn" href="{% url 'bot-ajax-premature_termination' %}">Завершить
+                    заранее
+                </button>
+            {% else %}
+                <button class="btn btn-success action-btn" href="{% url 'bot-ajax-start_time_interval' %}">Начать
+                    отчетный период
+                </button>
+            {% endif %}
+        </div>
+        <div class="col-6">
+            <h2 class="text-center">Другие ботальщики</h2>
+            <table class="table">
+                <thead>
+                <tr>
+                    <th scope="col">Пользователь</th>
+                    <th scope="col">Начало</th>
+                    <th scope="col">Конец</th>
+                    <th scope="col">Прогресс</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for other_time_interval in other_time_intervals %}
+                    <td>{{ other_time_interval.user_bot_settings.user.username }}</td>
+                    <td>{{ other_time_interval.start_time|date:"H:i d.m.Y" }}</td>
+                    <td>{{ other_time_interval.end_time|date:"H:i d.m.Y" }}</td>
+                    <td>{{ other_time_interval.count_completed_hours }}/{{ other_time_interval.hours_target }}</td>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not other_time_intervals %}
+                <p class="text-center">Больше никто не ботает :(</p>
+            {% endif %}
+        </div>
+    </div>
+
+
+{% endblock %}
