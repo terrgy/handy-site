@@ -1,0 +1,12 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <div class="alert alert-danger" role="alert">
+        Игра на бабки
+    </div>
+    <button class="btn btn-success action-btn" href="{% url 'bot-ajax-register' %}">Принять</button>
+    <a href="{% url 'fuck_off_ru_page' %}">
+        <button class="btn btn-danger">Отклонить</button>
+    </a>
+{% endblock %}
+

@@ -1,0 +1,14 @@
+{% extends 'base/base.html' %}
+
+{% load static %}
+
+{% block nav_menu %}
+    {% include 'base/bot_nav_menu.html' %}
+{% endblock %}
+
+{% block extra_js %}
+    <script type="text/javascript">
+        check_updater_url = '{% url 'bot-ajax-check_update' %}';
+    </script>
+    <script src="{% static 'js/bot.js' %}"></script>
+{% endblock %}

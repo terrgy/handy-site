@@ -54,7 +54,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'main',
     'olymp_prog',
+    'bot',
     'bootstrap5',
+    'django_apscheduler'
 ]
 
 MIDDLEWARE = [
@@ -146,7 +148,8 @@ STATIC_URL = '/static/'
 STATIC_ROOT = 'static'
 STATICFILES_DIRS = [
     BASE_DIR / 'main/static_dev',
-    BASE_DIR / 'olymp_prog/static_dev'
+    BASE_DIR / 'olymp_prog/static_dev',
+    BASE_DIR / 'bot/static_dev',
 ]
 
 # Auth
