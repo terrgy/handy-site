@@ -14,7 +14,7 @@
         <tr>
             <td>{% user_link session.user_bot_settings.user %}</td>
             <td>{{ session.start_time|date:"H:i d.m.Y" }}</td>
-            <td>{{ session.start_time|date:"H:i d.m.Y" }}</td>
+            <td>{{ session.end_time|date:"H:i d.m.Y" }}</td>
             <td>
                 {% if session.ending_cause == 1 %}
                     Ручное

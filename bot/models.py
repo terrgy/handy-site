@@ -108,6 +108,9 @@ class UserBotSettings(models.Model):
     def get_bank_profit(self) -> int:
         return BankRecord.count_user_profit(self)
 
+    def __str__(self):
+        return '{} (bs)'.format(self.user)
+
 
 class TimeInterval(models.Model):
     user_bot_settings = models.ForeignKey(
@@ -204,6 +207,9 @@ class TimeInterval(models.Model):
         self.save()
         return True
 
+    def __str__(self):
+        return '{}: {} - {}'.format(self.user_bot_settings, self.start_time, self.end_time)
+
 
 class SessionHistory(models.Model):
     user_bot_settings = models.ForeignKey(
@@ -264,7 +270,13 @@ class BotSession(models.Model):
         default=timezone.now,
     )
 
-    next_check_time = models.DateTimeField()
+    self_check_mode = models.BooleanField(
+        default=False,
+    )
+
+    next_check_time = models.DateTimeField(
+        null=True,
+    )
 
     class Meta:
         verbose_name = 'Bot session'
@@ -281,13 +293,13 @@ class BotSession(models.Model):
     AVAILABLE_CHECK_TIME_DURATION = 5
 
     def is_time_to_check(self):
-        if self.user_bot_settings.self_check_mode:
+        if self.self_check_mode:
             return False
         return (self.next_check_time <= timezone.now()) and \
                (timezone.now() <= self.next_check_time + timedelta(minutes=self.AVAILABLE_CHECK_TIME_DURATION))
 
     def is_check_overdue(self):
-        if self.user_bot_settings.self_check_mode:
+        if self.self_check_mode:
             return False
         return self.next_check_time + timedelta(minutes=self.AVAILABLE_CHECK_TIME_DURATION) < timezone.now()
 
@@ -304,8 +316,8 @@ class BotSession(models.Model):
 
     @classmethod
     def start_new_session(cls, user_bot_settings: UserBotSettings):
-        session = cls(user_bot_settings=user_bot_settings)
-        if not user_bot_settings.self_check_mode:
+        session = cls(user_bot_settings=user_bot_settings, self_check_mode=user_bot_settings.self_check_mode)
+        if not session.self_check_mode:
             session.generate_new_check_time()
         session.save()
         return session
@@ -319,7 +331,7 @@ class BotSession(models.Model):
         self.delete()
 
     def verify_session(self):
-        if not self.user_bot_settings.self_check_mode:
+        if not self.self_check_mode:
             if self.is_check_overdue():
                 self.end_session(SessionHistory.EndingCauses.CHECK_FAILURE)
                 BankRecord.objects.create(
@@ -351,11 +363,13 @@ class TerminationApplication(models.Model):
     )
 
     message = models.TextField(
-        max_length=1000
+        max_length=1000,
+        blank=True,
     )
 
     reply = models.TextField(
-        max_length=1000
+        max_length=1000,
+        blank=True,
     )
 
     class Meta:
