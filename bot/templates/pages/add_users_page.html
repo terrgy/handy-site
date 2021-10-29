@@ -1,0 +1,11 @@
+{% extends 'base/bot_base.html' %}
+
+{% load bootstrap5 %}
+
+{% block content %}
+    <form action="" method="POST">
+        {% csrf_token %}
+        {% bootstrap_form add_users_form %}
+        <input class="btn btn-primary" type="submit" value="Добавить">
+    </form>
+{% endblock %}

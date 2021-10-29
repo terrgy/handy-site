@@ -1,4 +1,4 @@
-from django.forms import ModelForm
+from django.forms import ModelForm, Form, CharField
 
 from bot.models import UserBotSettings
 
@@ -20,3 +20,8 @@ class EditSettingsForm(ModelForm):
             'study_plan_hours': 'Сколько планируете ботать в часах?',
             'study_plan_days_duration_time_interval': 'В днях',
         }
+
+
+class AddUsersForm(Form):
+    username = CharField(max_length=100)
+    password = CharField(max_length=100)

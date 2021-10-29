@@ -1,10 +1,13 @@
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.utils import timezone
 
-from bot.forms import EditSettingsForm
+from bot.forms import EditSettingsForm, AddUsersForm
 from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory
+from main.models import User
 
 
 @login_required
@@ -92,3 +95,17 @@ def bank_page(request):
     context['settings'] = settings
     context['records'] = BankRecord.objects.all().order_by('time').reverse()[:10]
     return render(request, 'pages/bank_page.html', context)
+
+
+@staff_member_required()
+def add_users_page(request):
+    if request.method == 'POST':
+        form = AddUsersForm(request.POST)
+        if form.is_valid():
+            User.objects.create_user(form.cleaned_data['username'], '', form.cleaned_data['password'])
+            messages.add_message(request, messages.SUCCESS, 'Успех!')
+        else:
+            messages.add_message(request, messages.ERROR, 'Ошибка')
+    context = dict()
+    context['add_users_form'] = AddUsersForm()
+    return render(request, 'pages/add_users_page.html', context)
