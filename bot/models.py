@@ -108,6 +108,9 @@ class UserBotSettings(models.Model):
     def get_bank_profit(self) -> int:
         return BankRecord.count_user_profit(self)
 
+    def __str__(self):
+        return '{} (bs)'.format(self.user)
+
 
 class TimeInterval(models.Model):
     user_bot_settings = models.ForeignKey(
@@ -203,6 +206,9 @@ class TimeInterval(models.Model):
         self.assign_penalty()
         self.save()
         return True
+
+    def __str__(self):
+        return '{}: {} - {}'.format(self.user_bot_settings, self.start_time, self.end_time)
 
 
 class SessionHistory(models.Model):
@@ -351,11 +357,13 @@ class TerminationApplication(models.Model):
     )
 
     message = models.TextField(
-        max_length=1000
+        max_length=1000,
+        blank=True,
     )
 
     reply = models.TextField(
-        max_length=1000
+        max_length=1000,
+        blank=True,
     )
 
     class Meta:

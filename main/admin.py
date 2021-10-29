@@ -3,6 +3,18 @@ from django.contrib import admin
 from main.models import User
 
 
+def make_users_active(model_admin, request, queryset):
+    queryset.update(is_active=True)
+
+
+def make_users_inactive(model_admin, request, queryset):
+    queryset.update(is_active=False)
+
+
+make_users_active.short_description = 'Make selected active'
+make_users_inactive.short_description = 'Make selected inactive'
+
+
 @admin.register(User)
 class UserAdmin(admin.ModelAdmin):
     base_model = User
@@ -28,7 +40,7 @@ class UserAdmin(admin.ModelAdmin):
             ]
         })
     ]
-    # actions = [make_users_active, make_users_inactive]
+    actions = [make_users_active, make_users_inactive]
     save_on_top = True
     list_display = ['username', 'is_staff', 'is_active']
     list_filter = ['is_staff', 'is_active', 'is_superuser']
