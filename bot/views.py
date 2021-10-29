@@ -1,10 +1,13 @@
+from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
 # Create your views here.
 from django.utils import timezone
 
-from bot.forms import EditSettingsForm
-from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord
+from bot.forms import EditSettingsForm, AddUsersForm
+from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory
+from main.models import User
 
 
 @login_required
@@ -21,6 +24,7 @@ def index_page(request):
     if settings is None:
         return redirect('bot-start')
     timezone.activate('Europe/Moscow')
+    return render(request, 'pages/bot_index_page.html')
 
 
 @login_required
@@ -48,6 +52,8 @@ def time_interval_page(request):
     context['other_time_intervals'] = TimeInterval.objects.filter(start_time__lte=timezone.now(),
                                                                   end_time__gte=timezone.now()).exclude(
         user_bot_settings=settings)
+    context['time_intervals_history'] = TimeInterval.objects.filter(end_time__lt=timezone.now()).order_by(
+        'start_time').reverse()[:10]
     return render(request, 'pages/time_interval_page.html', context)
 
 
@@ -62,6 +68,7 @@ def bot_page(request):
     if session is not None:
         context['session'] = session
     context['other_sessions'] = BotSession.objects.exclude(user_bot_settings=settings)
+    context['sessions_history'] = SessionHistory.objects.all().order_by('start_time').reverse()[:10]
     return render(request, 'pages/bot_page.html', context)
 
 
@@ -86,5 +93,19 @@ def bank_page(request):
     context = dict()
     context['bank_sum'] = BankRecord.count_bank()
     context['settings'] = settings
-    context['bank_records'] = BankRecord.objects.all()
+    context['records'] = BankRecord.objects.all().order_by('time').reverse()[:10]
     return render(request, 'pages/bank_page.html', context)
+
+
+@staff_member_required()
+def add_users_page(request):
+    if request.method == 'POST':
+        form = AddUsersForm(request.POST)
+        if form.is_valid():
+            User.objects.create_user(form.cleaned_data['username'], '', form.cleaned_data['password'])
+            messages.add_message(request, messages.SUCCESS, 'Успех!')
+        else:
+            messages.add_message(request, messages.ERROR, 'Ошибка')
+    context = dict()
+    context['add_users_form'] = AddUsersForm()
+    return render(request, 'pages/add_users_page.html', context)

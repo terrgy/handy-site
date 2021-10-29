@@ -1,0 +1,25 @@
+{% load user_link %}
+
+<table class="table text-center">
+    <thead>
+    <tr>
+        <th scope="col">Пользователь</th>
+        <th scope="col">Начало</th>
+        <th scope="col">Конец</th>
+        <th scope="col">Прогресс</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for interval in intervals %}
+        <tr>
+            <td>{% user_link interval.user_bot_settings.user %}</td>
+            <td>{{ interval.start_time|date:"H:i d.m.Y" }}</td>
+            <td>{{ interval.end_time|date:"H:i d.m.Y" }}</td>
+            <td>{{ interval.count_completed_hours }}/{{ interval.hours_target }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if not intervals %}
+    <p class="text-center">Больше никто не ботает :(</p>
+{% endif %}

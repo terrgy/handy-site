@@ -9,6 +9,9 @@
 
     {% bootstrap_css %}
     {% block extra_css %}{% endblock %}
+
+    {% bootstrap_javascript %}
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 <body>
 
@@ -23,9 +26,6 @@
     </main>
 </div>
 
-
-{% bootstrap_javascript %}
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
     <script src="{% static 'js/cookie.js' %}"></script>
     <script src="{% static 'js/messages.js' %}"></script>
     <script src="{% static 'js/ajax.js' %}"></script>

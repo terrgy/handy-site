@@ -23,5 +23,6 @@ bot_urls = [
     path('action/', bot_views.bot_page, name='bot-action'),
     path('submit/', bot_views.submit_check_page, name='bot-submit'),
     path('bank/', bot_views.bank_page, name='bot-bank'),
+    path('add-users/', bot_views.add_users_page, name='bot-add_users'),
     path('ajax/', include(bot_ajax_urls)),
 ]

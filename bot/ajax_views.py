@@ -58,7 +58,11 @@ def start_time_interval_request(request):
         messages.add_message(request, messages.ERROR, 'Отчетный период уже идет')
         return get_json_error(request)
 
-    settings.start_new_time_interval()
+    try:
+        settings.start_new_time_interval()
+    except UserBotSettings.StudyPlanNotAssignedError:
+        messages.add_message(request, messages.ERROR, 'Не заданы параметры отчетного периода')
+        return get_json_error(request)
     return get_json_response(request, redirect=reverse('bot-time_interval'))
 
 
