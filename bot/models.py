@@ -440,8 +440,11 @@ class BankRecord(models.Model):
 
     @classmethod
     def count_user_profit(cls, user_bot_settings: UserBotSettings) -> int:
+        users_count = UserBotSettings.objects.filter(is_active=True).count() - 1
+        if not users_count:
+            return 0
         values_sum = 0
         for record in cls.objects.exclude(user_bot_settings=user_bot_settings):
             values_sum += record.value
-        values_sum = values_sum // UserBotSettings.objects.filter(is_active=True).count()
+        values_sum = values_sum // users_count
         return values_sum

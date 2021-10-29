@@ -1,0 +1,21 @@
+{% load user_link %}
+
+<table class="table">
+    <thead>
+    <tr>
+        <th scope="col">Пользователь</th>
+        <th scope="col">Начало</th>
+    </tr>
+    </thead>
+    <tbody>
+    {% for session in sessions %}
+        <tr>
+            <td>{% user_link session.user_bot_settings.user %}</td>
+            <td>{{ session.start_time|date:"H:i d.m.Y" }}</td>
+        </tr>
+    {% endfor %}
+    </tbody>
+</table>
+{% if not sessions %}
+    <p class="text-center">Больше никто не ботает :(</p>
+{% endif %}
