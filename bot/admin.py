@@ -112,11 +112,12 @@ class BotSessionAdmin(admin.ModelAdmin):
         ('General', {
             'fields': [
                 'user_bot_settings',
+                'start_time',
             ]
         }),
-        ('Duration', {
+        ('Checks', {
             'fields': [
-                'start_time',
+                'self_check_mode',
                 'next_check_time',
             ]
         })
