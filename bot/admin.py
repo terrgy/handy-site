@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from bot.models import UserBotSettings, TimeInterval, SessionHistory, BotSession, TerminationApplication, BankRecord
+from bot.models import UserBotSettings, TimeInterval, SessionHistory, BotSession, TerminationApplication, BankRecord, \
+    ChangeLog
 
 
 def make_users_active(model_admin, request, queryset):
@@ -195,4 +196,21 @@ class BankRecordAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = [assigned_user, 'value', 'reason']
     list_filter = ['time', 'reason']
+    search_fields = ['time']
+
+
+@admin.register(ChangeLog)
+class ChangeLogAdmin(admin.ModelAdmin):
+    base_model = ChangeLog
+    fieldsets = [
+        ('General', {
+            'fields': [
+                'message',
+                ('type', 'time'),
+            ]
+        }),
+    ]
+    save_on_top = True
+    list_display = ['type', 'time', 'message',]
+    list_filter = ['time', 'type']
     search_fields = ['time']

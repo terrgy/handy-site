@@ -475,3 +475,45 @@ class BankRecord(models.Model):
             values_sum += record.value
         values_sum = values_sum // users_count
         return values_sum
+
+
+class ChangeLog(models.Model):
+    time = models.DateTimeField(
+        default=timezone.now
+    )
+
+    message = models.TextField(
+        max_length=5000,
+    )
+
+    class Types(models.IntegerChoices):
+        SYSTEM = 1
+        BUG = 2
+        EVENT = 3
+        COMMUNITY = 4
+        UPDATE = 5
+        UNDEFINED = 6
+
+    type = models.IntegerField(
+        choices=Types.choices,
+        default=1,
+    )
+
+    class Meta:
+        verbose_name = 'Change log'
+        verbose_name_plural = 'Change logs'
+
+    def verbose_ru_translation(self) -> str:
+        if self.type == self.Types.SYSTEM:
+            return 'Системное'
+        elif self.type == self.Types.BUG:
+            return 'Исправление'
+        elif self.type == self.Types.EVENT:
+            return 'Событие'
+        elif self.type == self.Types.COMMUNITY:
+            return 'Сообщество'
+        elif self.type == self.Types.UPDATE:
+            return 'Обновление'
+        elif self.type == self.Types.UNDEFINED:
+            return 'Неопределенное'
+        return ''

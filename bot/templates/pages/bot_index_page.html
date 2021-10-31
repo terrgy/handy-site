@@ -1,5 +1,13 @@
 {% extends 'base/bot_base.html' %}
 
 {% block content %}
-    Я хуй знает, что здесь написать
+    <div class="row">
+        Я хуй знает, что здесь написать
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h1 class="text-center">Изменения</h1>
+            {% include 'blocks/change_logs_table.html' %}
+        </div>
+    </div>
 {% endblock %}
