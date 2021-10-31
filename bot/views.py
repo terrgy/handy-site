@@ -2,11 +2,11 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-# Create your views here.
 from django.utils import timezone
 
 from bot.forms import EditSettingsForm, AddUsersForm
-from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory
+from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory, ChangeLog, \
+    NotCompleteIntervalPenalty, CheckFailPenalty
 from main.models import User
 
 
@@ -24,7 +24,11 @@ def index_page(request):
     if settings is None:
         return redirect('bot-start')
     timezone.activate('Europe/Moscow')
-    return render(request, 'pages/bot_index_page.html')
+    context = dict()
+    context['not_complete_interval_penalty'] = NotCompleteIntervalPenalty.get_last_penalty()
+    context['check_fail_penalty'] = CheckFailPenalty.get_last_penalty()
+    context['logs'] = ChangeLog.objects.all().order_by('time').reverse()
+    return render(request, 'pages/bot_index_page.html', context)
 
 
 @login_required

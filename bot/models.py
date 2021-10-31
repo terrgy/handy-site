@@ -145,6 +145,7 @@ class TimeInterval(models.Model):
         ON_HOLD = 4
         TERMINATED_WITH_REFUND = 5
         TERMINATED_WITHOUT_REFUND = 6
+        TERMINATED_PREMATURE = 7
 
     status = models.IntegerField(
         choices=Statuses.choices,
@@ -179,7 +180,7 @@ class TimeInterval(models.Model):
     def assign_penalty(self):
         if self.hours_completed >= self.hours_target:
             return
-        self.penalty = 100 * self.initial_duration * (self.hours_target - self.hours_completed) // self.hours_target
+        self.penalty = NotCompleteIntervalPenalty.get_last_penalty() * self.initial_duration * (self.hours_target - self.hours_completed) // self.hours_target
         self.save()
 
         BankRecord.objects.create(
@@ -190,13 +191,26 @@ class TimeInterval(models.Model):
 
         self.user_bot_settings.withdraw_points(self.penalty)
 
+    def renew_time_interval(self) -> bool:
+        if not self.user_bot_settings.time_interval_auto_renewal:
+            return False
+
+        try:
+            self.user_bot_settings.start_new_time_interval()
+        except (UserBotSettings.TimeIntervalAlreadyStartedError, UserBotSettings.StudyPlanNotAssignedError):
+            return False
+        return True
+
     def try_to_bake(self) -> bool:
-        if self.status != self.Statuses.RUNNING:
+        if self.status not in [self.Statuses.RUNNING, self.Statuses.TERMINATED_PREMATURE]:
             return False
         if timezone.now() <= self.end_time:
             return False
         if BotSession.is_running_session(self.user_bot_settings):
             return False
+
+        if self.status != self.Statuses.TERMINATED_PREMATURE:
+            self.renew_time_interval()
 
         self.count_completed_hours()
         if self.hours_completed >= self.hours_target:
@@ -205,6 +219,7 @@ class TimeInterval(models.Model):
             self.status = self.Statuses.FAILED
         self.assign_penalty()
         self.save()
+
         return True
 
     def __str__(self):
@@ -334,11 +349,13 @@ class BotSession(models.Model):
         if not self.self_check_mode:
             if self.is_check_overdue():
                 self.end_session(SessionHistory.EndingCauses.CHECK_FAILURE)
+                penalty = CheckFailPenalty.get_last_penalty()
                 BankRecord.objects.create(
                     user_bot_settings=self.user_bot_settings,
-                    value=100,
+                    value=penalty,
                     reason=BankRecord.Reasons.CHECK_FAIL,
                 )
+                self.user_bot_settings.withdraw_points(penalty)
 
     def process_check(self):
         if self.is_time_to_check():
@@ -379,6 +396,7 @@ class TerminationApplication(models.Model):
     @staticmethod
     def premature_termination(time_interval: TimeInterval):
         time_interval.end_time = timezone.now()
+        time_interval.status = time_interval.Statuses.TERMINATED_PREMATURE
         time_interval.save()
 
     @classmethod
@@ -462,3 +480,85 @@ class BankRecord(models.Model):
             values_sum += record.value
         values_sum = values_sum // users_count
         return values_sum
+
+
+class ChangeLog(models.Model):
+    time = models.DateTimeField(
+        default=timezone.now
+    )
+
+    message = models.TextField(
+        max_length=5000,
+    )
+
+    class Types(models.IntegerChoices):
+        SYSTEM = 1
+        BUG = 2
+        EVENT = 3
+        COMMUNITY = 4
+        UPDATE = 5
+        UNDEFINED = 6
+
+    type = models.IntegerField(
+        choices=Types.choices,
+        default=1,
+    )
+
+    class Meta:
+        verbose_name = 'Change log'
+        verbose_name_plural = 'Change logs'
+
+    def verbose_ru_translation(self) -> str:
+        if self.type == self.Types.SYSTEM:
+            return 'Системное'
+        elif self.type == self.Types.BUG:
+            return 'Исправление'
+        elif self.type == self.Types.EVENT:
+            return 'Событие'
+        elif self.type == self.Types.COMMUNITY:
+            return 'Сообщество'
+        elif self.type == self.Types.UPDATE:
+            return 'Обновление'
+        elif self.type == self.Types.UNDEFINED:
+            return 'Неопределенное'
+        return ''
+
+
+class BasePenalty(models.Model):
+    DEFAULT_VALUE = 0
+
+    value = models.IntegerField(
+        default=DEFAULT_VALUE,
+    )
+
+    time = models.DateTimeField(
+        default=timezone.now
+    )
+
+    class Meta:
+        ordering = ['time']
+        verbose_name = 'Base penalty'
+        verbose_name_plural = 'Base penalties'
+
+    @classmethod
+    def get_last_penalty(cls) -> int:
+        try:
+            return cls.objects.reverse()[0:1].get().value
+        except cls.DoesNotExist:
+            return cls.DEFAULT_VALUE
+
+
+class NotCompleteIntervalPenalty(BasePenalty):
+    DEFAULT_VALUE = 1000
+
+    class Meta:
+        verbose_name = 'Not complete interval penalty'
+        verbose_name_plural = 'Not complete interval penalties'
+
+
+class CheckFailPenalty(BasePenalty):
+    DEFAULT_VALUE = 100
+
+    class Meta:
+        verbose_name = 'Check fail penalty'
+        verbose_name_plural = 'Check fail penalties'

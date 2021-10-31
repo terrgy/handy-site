@@ -1,6 +1,7 @@
 from django.contrib import admin
 
-from bot.models import UserBotSettings, TimeInterval, SessionHistory, BotSession, TerminationApplication, BankRecord
+from bot.models import UserBotSettings, TimeInterval, SessionHistory, BotSession, TerminationApplication, BankRecord, \
+    ChangeLog, NotCompleteIntervalPenalty, BasePenalty, CheckFailPenalty
 
 
 def make_users_active(model_admin, request, queryset):
@@ -195,4 +196,47 @@ class BankRecordAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = [assigned_user, 'value', 'reason']
     list_filter = ['time', 'reason']
-    readonly_fields = ['time']
+    search_fields = ['time']
+
+
+@admin.register(ChangeLog)
+class ChangeLogAdmin(admin.ModelAdmin):
+    base_model = ChangeLog
+    fieldsets = [
+        ('General', {
+            'fields': [
+                'message',
+                ('type', 'time'),
+            ]
+        }),
+    ]
+    save_on_top = True
+    list_display = ['type', 'time', 'message',]
+    list_filter = ['time', 'type']
+    search_fields = ['time']
+
+
+class PenaltyAdmin(admin.ModelAdmin):
+    base_model = BasePenalty
+    fieldsets = [
+        ('General', {
+            'fields': [
+                'value',
+                'time'
+            ]
+        }),
+    ]
+    save_on_top = True
+    list_display = ['value', 'time']
+    list_filter = ['time']
+    search_fields = ['time']
+
+
+@admin.register(NotCompleteIntervalPenalty)
+class NotCompleteIntervalPenaltyAdmin(PenaltyAdmin):
+    base_model = NotCompleteIntervalPenalty
+
+
+@admin.register(CheckFailPenalty)
+class CheckFailPenaltyAdmin(PenaltyAdmin):
+    base_model = CheckFailPenalty

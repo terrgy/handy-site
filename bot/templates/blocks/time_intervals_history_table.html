@@ -34,6 +34,8 @@
                     <span class="text-success">Отменен (без штрафа)</span>
                 {% elif interval.status == 6 %}
                     <span class="text-danger">Отменен (со штрафом)</span>
+                {% elif interval.status == 7 %}
+                    <span class="text-warning">Окончен заранее (ждет обработки)</span>
                 {% endif %}
             </td>
         </tr>

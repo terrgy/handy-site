@@ -1,5 +1,14 @@
 {% extends 'base/bot_base.html' %}
 
 {% block content %}
-    Я хуй знает, что здесь написать
+    <div class="row text-center">
+        <h1>Штраф за невыполнение плана: {{ not_complete_interval_penalty }}</h1>
+        <h2>Штраф за проваленную проверку: {{ check_fail_penalty }}</h2>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h1 class="text-center">Изменения</h1>
+            {% include 'blocks/change_logs_table.html' %}
+        </div>
+    </div>
 {% endblock %}
