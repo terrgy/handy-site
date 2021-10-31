@@ -190,6 +190,16 @@ class TimeInterval(models.Model):
 
         self.user_bot_settings.withdraw_points(self.penalty)
 
+    def renew_time_interval(self) -> bool:
+        if not self.user_bot_settings.time_interval_auto_renewal:
+            return False
+
+        try:
+            self.user_bot_settings.start_new_time_interval()
+        except (UserBotSettings.TimeIntervalAlreadyStartedError, UserBotSettings.StudyPlanNotAssignedError):
+            return False
+        return True
+
     def try_to_bake(self) -> bool:
         if self.status != self.Statuses.RUNNING:
             return False
@@ -205,6 +215,9 @@ class TimeInterval(models.Model):
             self.status = self.Statuses.FAILED
         self.assign_penalty()
         self.save()
+
+        self.renew_time_interval()
+
         return True
 
     def __str__(self):
