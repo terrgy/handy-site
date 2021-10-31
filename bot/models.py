@@ -179,7 +179,7 @@ class TimeInterval(models.Model):
     def assign_penalty(self):
         if self.hours_completed >= self.hours_target:
             return
-        self.penalty = 100 * self.initial_duration * (self.hours_target - self.hours_completed) // self.hours_target
+        self.penalty = NotCompleteIntervalPenalty.get_last_penalty() * self.initial_duration * (self.hours_target - self.hours_completed) // self.hours_target
         self.save()
 
         BankRecord.objects.create(
@@ -347,11 +347,13 @@ class BotSession(models.Model):
         if not self.self_check_mode:
             if self.is_check_overdue():
                 self.end_session(SessionHistory.EndingCauses.CHECK_FAILURE)
+                penalty = CheckFailPenalty.get_last_penalty()
                 BankRecord.objects.create(
                     user_bot_settings=self.user_bot_settings,
-                    value=100,
+                    value=penalty,
                     reason=BankRecord.Reasons.CHECK_FAIL,
                 )
+                self.user_bot_settings.withdraw_points(penalty)
 
     def process_check(self):
         if self.is_time_to_check():
@@ -517,3 +519,43 @@ class ChangeLog(models.Model):
         elif self.type == self.Types.UNDEFINED:
             return 'Неопределенное'
         return ''
+
+
+class BasePenalty(models.Model):
+    DEFAULT_VALUE = 0
+
+    value = models.IntegerField(
+        default=DEFAULT_VALUE,
+    )
+
+    time = models.DateTimeField(
+        default=timezone.now
+    )
+
+    class Meta:
+        ordering = ['time']
+        verbose_name = 'Base penalty'
+        verbose_name_plural = 'Base penalties'
+
+    @classmethod
+    def get_last_penalty(cls) -> int:
+        try:
+            return cls.objects.reverse()[0:1].get().value
+        except cls.DoesNotExist:
+            return cls.DEFAULT_VALUE
+
+
+class NotCompleteIntervalPenalty(BasePenalty):
+    DEFAULT_VALUE = 1000
+
+    class Meta:
+        verbose_name = 'Not complete interval penalty'
+        verbose_name_plural = 'Not complete interval penalties'
+
+
+class CheckFailPenalty(BasePenalty):
+    DEFAULT_VALUE = 100
+
+    class Meta:
+        verbose_name = 'Check fail penalty'
+        verbose_name_plural = 'Check fail penalties'

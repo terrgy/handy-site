@@ -5,7 +5,8 @@ from django.shortcuts import render, redirect
 from django.utils import timezone
 
 from bot.forms import EditSettingsForm, AddUsersForm
-from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory, ChangeLog
+from bot.models import UserBotSettings, TimeInterval, BotSession, BankRecord, SessionHistory, ChangeLog, \
+    NotCompleteIntervalPenalty, CheckFailPenalty
 from main.models import User
 
 
@@ -24,6 +25,8 @@ def index_page(request):
         return redirect('bot-start')
     timezone.activate('Europe/Moscow')
     context = dict()
+    context['not_complete_interval_penalty'] = NotCompleteIntervalPenalty.get_last_penalty()
+    context['check_fail_penalty'] = CheckFailPenalty.get_last_penalty()
     context['logs'] = ChangeLog.objects.all().order_by('time').reverse()
     return render(request, 'pages/bot_index_page.html', context)
 
