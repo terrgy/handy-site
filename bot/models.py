@@ -145,6 +145,7 @@ class TimeInterval(models.Model):
         ON_HOLD = 4
         TERMINATED_WITH_REFUND = 5
         TERMINATED_WITHOUT_REFUND = 6
+        TERMINATED_PREMATURE = 7
 
     status = models.IntegerField(
         choices=Statuses.choices,
@@ -201,12 +202,15 @@ class TimeInterval(models.Model):
         return True
 
     def try_to_bake(self) -> bool:
-        if self.status != self.Statuses.RUNNING:
+        if self.status not in [self.Statuses.RUNNING, self.Statuses.TERMINATED_PREMATURE]:
             return False
         if timezone.now() <= self.end_time:
             return False
         if BotSession.is_running_session(self.user_bot_settings):
             return False
+
+        if self.status != self.Statuses.TERMINATED_PREMATURE:
+            self.renew_time_interval()
 
         self.count_completed_hours()
         if self.hours_completed >= self.hours_target:
@@ -215,8 +219,6 @@ class TimeInterval(models.Model):
             self.status = self.Statuses.FAILED
         self.assign_penalty()
         self.save()
-
-        self.renew_time_interval()
 
         return True
 
@@ -394,6 +396,7 @@ class TerminationApplication(models.Model):
     @staticmethod
     def premature_termination(time_interval: TimeInterval):
         time_interval.end_time = timezone.now()
+        time_interval.status = time_interval.Statuses.TERMINATED_PREMATURE
         time_interval.save()
 
     @classmethod
