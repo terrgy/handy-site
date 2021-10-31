@@ -195,4 +195,4 @@ class BankRecordAdmin(admin.ModelAdmin):
     save_on_top = True
     list_display = [assigned_user, 'value', 'reason']
     list_filter = ['time', 'reason']
-    readonly_fields = ['time']
+    search_fields = ['time']
