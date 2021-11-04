@@ -35,7 +35,7 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="col collapse" id="collapse_intervals">
+        <div class="col-10 collapse" id="collapse_intervals">
             <h2 class="text-center">Отчетные периоды</h2>
             {% with page_time_intervals as intervals %}
                 {% include 'blocks/time_intervals_history_table.html' %}
@@ -43,7 +43,7 @@
         </div>
     </div>
     <div class="row justify-content-center">
-        <div class="col collapse" id="collapse_sessions">
+        <div class="col-8 collapse" id="collapse_sessions">
             <h2 class="text-center">Боты</h2>
             {% with page_session_history as sessions %}
                 {% include 'blocks/bot_history_table.html' %}

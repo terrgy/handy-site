@@ -26,4 +26,7 @@ bot_urls = [
     path('ajax/', include(bot_ajax_urls)),
     path('user/', bot_views.user_page_current, name='bot-user_page_current'),
     path('user/<int:settings_id>/', bot_views.user_page, name='bot-user_page'),
+    path('all-time-intervals/', bot_views.all_time_intervals_page, name='bot-all_time_intervals_page'),
+    path('all-bot-sessions/', bot_views.all_bot_sessions_page, name='bot-all_bot_sessions_page'),
+    path('all-bank/', bot_views.all_bank_records_page, name='bot-all_bank_records_page'),
 ]

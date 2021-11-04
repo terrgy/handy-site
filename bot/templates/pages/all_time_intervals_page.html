@@ -1,0 +1,12 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <div class="row justify-content-center">
+        <div class="col-10">
+            <h1 class="text-center">Полная история отчетных периодов</h1>
+            {% with time_intervals_history as intervals %}
+                {% include 'blocks/time_intervals_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}

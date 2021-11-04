@@ -28,6 +28,12 @@
     <div class="row justify-content-center mt-5">
         <div class="col-10">
             <h2 class="text-center">История отчетных периодов</h2>
+            <h4 class="text-center">
+                <a href="{% url 'bot-all_time_intervals_page' %}">
+                    Полная история
+                </a>
+            </h4>
+
             {% with time_intervals_history as intervals %}
                 {% include 'blocks/time_intervals_history_table.html' %}
             {% endwith %}

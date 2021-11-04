@@ -130,3 +130,37 @@ def user_page_current(request):
     if settings is None:
         return redirect('bot-start')
     return redirect('bot-user_page', settings.pk)
+
+
+@login_required
+def all_time_intervals_page(request):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['time_intervals_history'] = TimeInterval.objects.filter(end_time__lt=timezone.now()).order_by(
+        'end_time').reverse()
+    return render(request, 'pages/all_time_intervals_page.html', context)
+
+
+@login_required
+def all_bot_sessions_page(request):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['sessions_history'] = SessionHistory.objects.all().order_by('end_time').reverse()
+    return render(request, 'pages/all_bot_sessions_page.html', context)
+
+
+@login_required()
+def all_bank_records_page(request):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['records'] = BankRecord.objects.all().order_by('time').reverse()
+    return render(request, 'pages/all_bank_records_page.html', context)
