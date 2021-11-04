@@ -1,0 +1,19 @@
+{% extends 'base/bot_base.html' %}
+
+{% load user_link %}
+{% load bot_duration %}
+
+{% block content %}
+    <h1>Бот #{{ page_bot.pk }}</h1>
+    <h2>Пользователь: {% user_link page_bot.user_bot_settings %}</h2>
+    <h2>Начало: {{ page_bot.start_time|date:"H:i d.m.Y" }}</h2>
+    <h2>Конец: {{ page_bot.end_time|date:"H:i d.m.Y" }}</h2>
+    <h2>Длительность: {% bot_duration page_bot %}</h2>
+    <h3>Окончание:
+        {% if page_bot.ending_cause == 1 %}
+            <span class="text-success">Ручное</span>
+        {% elif page_bot.ending_cause == 2 %}
+            <span class="text-danger">Не прошел/ла проверку</span>
+        {% endif %}
+    </h3>
+{% endblock %}

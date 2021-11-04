@@ -2,7 +2,7 @@ from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.http import Http404
-from django.shortcuts import render, redirect
+from django.shortcuts import render, redirect, get_object_or_404
 from django.utils import timezone
 
 from bot.forms import EditSettingsForm, AddUsersForm
@@ -109,10 +109,7 @@ def user_page(request, settings_id):
     if settings is None:
         return redirect('bot-start')
 
-    try:
-        page_settings = UserBotSettings.objects.get(pk=settings_id)
-    except UserBotSettings.DoesNotExist:
-        raise Http404('Пользователь не найден')
+    page_settings = get_object_or_404(UserBotSettings, pk=settings_id)
 
     timezone.activate('Europe/Moscow')
     context = dict()
@@ -164,3 +161,16 @@ def all_bank_records_page(request):
     context = dict()
     context['records'] = BankRecord.objects.all().order_by('time').reverse()
     return render(request, 'pages/all_bank_records_page.html', context)
+
+
+@login_required()
+def bot_view_page(request, bot_id):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    page_bot = get_object_or_404(SessionHistory, pk=bot_id)
+
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['page_bot'] = page_bot
+    return render(request, 'pages/bot_view_page.html', context)
