@@ -54,8 +54,7 @@ def time_interval_page(request):
     if interval is not None:
         context['time_interval'] = interval
     context['other_time_intervals'] = TimeInterval.objects.filter(start_time__lte=timezone.now(),
-                                                                  end_time__gte=timezone.now()).exclude(
-        user_bot_settings=settings)
+                                                                  end_time__gte=timezone.now())
     context['time_intervals_history'] = TimeInterval.objects.filter(end_time__lt=timezone.now()).order_by(
         'end_time').reverse()[:10]
     return render(request, 'pages/time_interval_page.html', context)
@@ -71,7 +70,7 @@ def bot_page(request):
     session = BotSession.get_session(settings)
     if session is not None:
         context['session'] = session
-    context['other_sessions'] = BotSession.objects.exclude(user_bot_settings=settings)
+    context['other_sessions'] = BotSession.objects.all()
     context['sessions_history'] = SessionHistory.objects.all().order_by('end_time').reverse()[:10]
     return render(request, 'pages/bot_page.html', context)
 
