@@ -1,0 +1,55 @@
+{% extends 'base/bot_base.html' %}
+
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
+    <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Назад</a></h3>
+    <div class="row">
+        <div class="col-6">
+            <h1>{{ page_settings.user }}</h1>
+            <h2>Кредиты: {{ page_settings.points }}</h2>
+        </div>
+        <div class="col-6">
+            {% if settings_form %}
+                <h2>Настройки</h2>
+                <form method="POST" class="edit-form" action="{% url 'bot-ajax-edit_settings' %}">
+                    {% csrf_token %}
+                    {% bootstrap_form settings_form %}
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+
+                <script src="{% static 'js/settings.js' %}"></script>
+            {% endif %}
+        </div>
+    </div>
+    <div class="row justify-content-start">
+        <div class="col-2">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse_intervals" role="button" aria-expanded="false" aria-controls="collapse_intervals">
+                Отчетные периоды
+            </a>
+        </div>
+        <div class="col-1">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse_sessions" role="button" aria-expanded="false" aria-controls="collapse_sessions">
+                Боты
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-10 collapse" id="collapse_intervals">
+            <h2 class="text-center">Отчетные периоды</h2>
+            {% with page_time_intervals as intervals %}
+                {% include 'blocks/time_intervals_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col-8 collapse" id="collapse_sessions">
+            <h2 class="text-center">Боты</h2>
+            {% with page_session_history as sessions %}
+                {% include 'blocks/bot_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+
+{% endblock %}

@@ -1,0 +1,13 @@
+{% extends 'base/bot_base.html' %}
+
+{% block content %}
+    <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Назад</a></h3>
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <h1 class="text-center">Полная история ботов</h1>
+            {% with sessions_history as sessions %}
+                {% include 'blocks/bot_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+{% endblock %}
