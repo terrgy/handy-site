@@ -4,6 +4,7 @@
 {% load duration %}
 
 {% block content %}
+    <h3><a href="#" class="text-decoration-none" onclick="window.history.back()">Назад</a></h3>
     <h1>Бот #{{ page_bot.pk }}</h1>
     <h2>Пользователь: {% user_link page_bot.user_bot_settings %}</h2>
     <h2>Начало: {{ page_bot.start_time|date:"H:i d.m.Y" }}</h2>
