@@ -174,3 +174,17 @@ def bot_view_page(request, bot_id):
     context = dict()
     context['page_bot'] = page_bot
     return render(request, 'pages/bot_view_page.html', context)
+
+
+@login_required()
+def time_interval_view_page(request, time_interval_id):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    page_time_interval = get_object_or_404(TimeInterval, pk=time_interval_id)
+
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['page_time_interval'] = page_time_interval
+    context['page_bot_sessions'] = page_time_interval.get_sessions_on_time_interval()
+    return render(request, 'pages/time_interval_view_page.html', context)

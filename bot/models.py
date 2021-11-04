@@ -169,6 +169,12 @@ class TimeInterval(models.Model):
         except cls.DoesNotExist:
             return None
 
+    def get_real_duration(self) -> timedelta:
+        return self.end_time - self.start_time
+
+    def get_sessions_on_time_interval(self):
+        return SessionHistory.get_sessions_on_time_interval(self.user_bot_settings, self.start_time, self.end_time)
+
     def get_sum_durations_on_time_interval(self) -> timedelta:
         return SessionHistory.get_durations_sum_in_time_interval(self.user_bot_settings, self.start_time, self.end_time)
 
@@ -269,10 +275,13 @@ class SessionHistory(models.Model):
     @classmethod
     def get_durations_sum_in_time_interval(cls, user_bot_settings: UserBotSettings, start, end) -> timedelta:
         durations_sum = timedelta()
-        for session in \
-                cls.objects.filter(user_bot_settings=user_bot_settings, start_time__lte=end, end_time__gte=start):
+        for session in cls.get_sessions_on_time_interval(user_bot_settings, start, end):
             durations_sum += session.get_duration_on_interval(start, end)
         return durations_sum
+
+    @classmethod
+    def get_sessions_on_time_interval(cls, user_bot_settings: UserBotSettings, start, end):
+        return cls.objects.filter(user_bot_settings=user_bot_settings, start_time__lte=end, end_time__gte=start)
 
 
 class BotSession(models.Model):

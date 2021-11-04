@@ -30,4 +30,5 @@ bot_urls = [
     path('all-bot-sessions/', bot_views.all_bot_sessions_page, name='bot-all_bot_sessions_page'),
     path('all-bank/', bot_views.all_bank_records_page, name='bot-all_bank_records_page'),
     path('session/<int:bot_id>/', bot_views.bot_view_page, name='bot-bot_view_page'),
+    path('time-interval/<int:time_interval_id>/', bot_views.time_interval_view_page, name='bot-time_interval_view_page'),
 ]

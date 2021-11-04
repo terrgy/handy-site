@@ -1,0 +1,75 @@
+{% extends 'base/bot_base.html' %}
+
+{% load user_link %}
+{% load duration %}
+{% load duration_on_time_interval %}
+
+{% block content %}
+    <div class="row justify-content-between">
+        <div class="col-4">
+            <h1>Отчетный период #{{ page_time_interval.pk }}</h1>
+            <h2>Пользователь: {% user_link page_time_interval.user_bot_settings %}</h2>
+            <h2>Начало: {{ page_time_interval.start_time|date:"H:i d.m.Y" }}</h2>
+            <h2>Конец: {{ page_time_interval.end_time|date:"H:i d.m.Y" }}</h2>
+            <h2>Длительность: {% duration page_time_interval.get_real_duration True %}</h2>
+            <h2>План: {{ page_time_interval.hours_target }}ч./{{ page_time_interval.initial_duration }}д.</h2>
+            <h2>Заботано: {% duration page_time_interval.get_sum_durations_on_time_interval %}</h2>
+            <h3>Статус:
+                {% if page_time_interval.status == 1 %}
+                    <span class="text-primary">В процессе</span>
+                {% elif page_time_interval.status == 2 %}
+                    <span class="text-success">Выполнен</span>
+                {% elif page_time_interval.status == 3 %}
+                    <span class="text-danger">Провален</span>
+                {% elif page_time_interval.status == 4 %}
+                    <span class="text-warning">На рассмотрении</span>
+                {% elif page_time_interval.status == 5 %}
+                    <span class="text-success">Отменен (без штрафа)</span>
+                {% elif page_time_interval.status == 6 %}
+                    <span class="text-danger">Отменен (со штрафом)</span>
+                {% elif page_time_interval.status == 7 %}
+                    <span class="text-warning">Окончен заранее (ждет обработки)</span>
+                {% endif %}
+            </h3>
+        </div>
+        <div class="col-7">
+            <h2 class="text-center">Включенные боты</h2>
+            <table class="table text-center">
+                <thead>
+                <tr>
+                    <th scope="col">#</th>
+                    <th scope="col">Начало</th>
+                    <th scope="col">Конец</th>
+                    <th scope="col">Длительность</th>
+                    <th scope="col">Завершение</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for session in page_bot_sessions %}
+                    <tr>
+                        <th scope="row">
+                            <a href="{% url 'bot-bot_view_page' session.pk %}">
+                                {{ session.pk }}
+                            </a>
+                        </th>
+                        <td>{{ session.start_time|date:"H:i d.m.Y" }}</td>
+                        <td>{{ session.end_time|date:"H:i d.m.Y" }}</td>
+                        <td>{% duration_on_time_interval page_time_interval session %}</td>
+                        <td>
+                            {% if session.ending_cause == 1 %}
+                                <span class="text-success">Ручное</span>
+                            {% elif session.ending_cause == 2 %}
+                                <span class="text-danger">Не прошел/ла проверку</span>
+                            {% endif %}
+                        </td>
+                    </tr>
+                {% endfor %}
+                </tbody>
+            </table>
+            {% if not page_bot_sessions %}
+                <p class="text-center">Пока нет ботов :(</p>
+            {% endif %}
+        </div>
+    </div>
+
+{% endblock %}
