@@ -9,7 +9,7 @@
                 <h3>Конец: {{ time_interval.end_time|date:"H:i d.m.Y" }}</h3>
                 <h3>Прогресс: {{ time_interval.count_completed_hours }}/{{ time_interval.hours_target }}</h3>
 
-                <button class="btn btn-warning action-btn" href="{% url 'bot-ajax-premature_termination' %}">Завершить
+                <button class="btn btn-danger action-btn" href="{% url 'bot-ajax-premature_termination' %}">Завершить
                     заранее
                 </button>
             {% else %}
