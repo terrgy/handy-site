@@ -22,4 +22,33 @@
             {% endif %}
         </div>
     </div>
+    <div class="row justify-content-start">
+        <div class="col-2">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse_intervals" role="button" aria-expanded="false" aria-controls="collapse_intervals">
+                Отчетные периоды
+            </a>
+        </div>
+        <div class="col-1">
+            <a class="btn btn-primary" data-bs-toggle="collapse" href="#collapse_sessions" role="button" aria-expanded="false" aria-controls="collapse_sessions">
+                Боты
+            </a>
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col collapse" id="collapse_intervals">
+            <h2 class="text-center">Отчетные периоды</h2>
+            {% with page_time_intervals as intervals %}
+                {% include 'blocks/time_intervals_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+    <div class="row justify-content-center">
+        <div class="col collapse" id="collapse_sessions">
+            <h2 class="text-center">Боты</h2>
+            {% with page_session_history as sessions %}
+                {% include 'blocks/bot_history_table.html' %}
+            {% endwith %}
+        </div>
+    </div>
+
 {% endblock %}

@@ -119,6 +119,8 @@ def user_page(request, settings_id):
     context['page_settings'] = page_settings
     if settings == page_settings:
         context['settings_form'] = EditSettingsForm(instance=settings)
+    context['page_time_intervals'] = TimeInterval.objects.filter(user_bot_settings=page_settings).order_by('end_time').reverse()
+    context['page_session_history'] = SessionHistory.objects.filter(user_bot_settings=page_settings).order_by('end_time').reverse()
     return render(request, 'pages/user_page.html', context)
 
 
