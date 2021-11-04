@@ -15,7 +15,7 @@
     <tbody>
     {% for interval in intervals %}
         <tr>
-            <td>{% user_link interval.user_bot_settings.user %}</td>
+            <td>{% user_link interval.user_bot_settings %}</td>
             <td>{{ interval.start_time|date:"H:i d.m.Y" }}</td>
             <td>{{ interval.end_time|date:"H:i d.m.Y" }}</td>
             <td>{{ interval.hours_target }}ч./{{ interval.initial_duration }}д.</td>

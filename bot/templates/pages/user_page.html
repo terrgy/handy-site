@@ -1,0 +1,25 @@
+{% extends 'base/bot_base.html' %}
+
+{% load static %}
+{% load bootstrap5 %}
+
+{% block content %}
+    <div class="row">
+        <div class="col-6">
+            <h1>{{ page_settings.user }}</h1>
+            <h2>Кредиты: {{ page_settings.points }}</h2>
+        </div>
+        <div class="col-6">
+            {% if settings_form %}
+                <h2>Настройки</h2>
+                <form method="POST" class="edit-form" action="{% url 'bot-ajax-edit_settings' %}">
+                    {% csrf_token %}
+                    {% bootstrap_form settings_form %}
+                    <button type="submit" class="btn btn-primary">Сохранить</button>
+                </form>
+
+                <script src="{% static 'js/settings.js' %}"></script>
+            {% endif %}
+        </div>
+    </div>
+{% endblock %}

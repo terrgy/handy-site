@@ -18,11 +18,12 @@ bot_ajax_urls = [
 bot_urls = [
     path('start/', bot_views.start_page, name='bot-start'),
     path('', bot_views.index_page, name='bot-index'),
-    path('settings/', bot_views.settings_page, name='bot-settings'),
     path('time-interval/', bot_views.time_interval_page, name='bot-time_interval'),
     path('action/', bot_views.bot_page, name='bot-action'),
     path('submit/', bot_views.submit_check_page, name='bot-submit'),
     path('bank/', bot_views.bank_page, name='bot-bank'),
     path('add-users/', bot_views.add_users_page, name='bot-add_users'),
     path('ajax/', include(bot_ajax_urls)),
+    path('user/', bot_views.user_page_current, name='bot-user_page_current'),
+    path('user/<int:settings_id>/', bot_views.user_page, name='bot-user_page'),
 ]

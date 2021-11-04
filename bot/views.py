@@ -1,6 +1,7 @@
 from django.contrib import messages
 from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from django.shortcuts import render, redirect
 from django.utils import timezone
 
@@ -29,18 +30,6 @@ def index_page(request):
     context['check_fail_penalty'] = CheckFailPenalty.get_last_penalty()
     context['logs'] = ChangeLog.objects.all().order_by('time').reverse()
     return render(request, 'pages/bot_index_page.html', context)
-
-
-@login_required
-def settings_page(request):
-    settings = UserBotSettings.get_settings(request.user)
-    if settings is None:
-        return redirect('bot-start')
-    timezone.activate('Europe/Moscow')
-    context = dict()
-    context['settings'] = settings
-    context['settings_form'] = EditSettingsForm(instance=settings)
-    return render(request, 'pages/settings_page.html', context)
 
 
 @login_required
@@ -112,3 +101,30 @@ def add_users_page(request):
     context = dict()
     context['add_users_form'] = AddUsersForm()
     return render(request, 'pages/add_users_page.html', context)
+
+
+@login_required()
+def user_page(request, settings_id):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+
+    try:
+        page_settings = UserBotSettings.objects.get(pk=settings_id)
+    except UserBotSettings.DoesNotExist:
+        raise Http404('Пользователь не найден')
+
+    timezone.activate('Europe/Moscow')
+    context = dict()
+    context['page_settings'] = page_settings
+    if settings == page_settings:
+        context['settings_form'] = EditSettingsForm(instance=settings)
+    return render(request, 'pages/user_page.html', context)
+
+
+@login_required()
+def user_page_current(request):
+    settings = UserBotSettings.get_settings(request.user)
+    if settings is None:
+        return redirect('bot-start')
+    return redirect('bot-user_page', settings.pk)
