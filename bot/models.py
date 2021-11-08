@@ -490,6 +490,18 @@ class BankRecord(models.Model):
         values_sum = values_sum // users_count
         return values_sum
 
+    @classmethod
+    def distribute_points(cls):
+        users = UserBotSettings.objects.filter(is_active=True)
+        users_count = users.count() - 1
+        if users_count < 1:
+            return
+        bank_sum = cls.count_bank()
+        for user in users:
+            cur_user_points = (bank_sum - cls.count_user_intake(user)) // users_count
+            user.deposit_points(cur_user_points)
+        cls.objects.all().delete()
+
 
 class ChangeLog(models.Model):
     time = models.DateTimeField(
