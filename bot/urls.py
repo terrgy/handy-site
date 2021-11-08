@@ -12,6 +12,7 @@ bot_ajax_urls = [
     path('submit-check/', bot_ajax_views.submit_check_request, name='bot-ajax-submit_check'),
     path('check-update/', bot_ajax_views.check_update_request, name='bot-ajax-check_update'),
     path('end-session/', bot_ajax_views.end_session_request, name='bot-ajax-end_session'),
+    path('distribute-points/', bot_ajax_views.distribute_points, name='bot-distribute_points'),
 ]
 
 # url - /bot/...

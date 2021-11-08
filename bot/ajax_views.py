@@ -1,10 +1,11 @@
 from django.contrib import messages
+from django.contrib.admin.views.decorators import staff_member_required
 from django.contrib.auth.decorators import login_required
 from django.core.exceptions import PermissionDenied
 from django.urls import reverse
 
 from bot.forms import EditSettingsForm
-from bot.models import UserBotSettings, TimeInterval, TerminationApplication, BotSession
+from bot.models import UserBotSettings, TimeInterval, TerminationApplication, BotSession, BankRecord
 from main.utils.get_json_error import get_json_error
 from main.utils.get_json_response import get_json_response
 
@@ -144,3 +145,12 @@ def end_session_request(request):
         return get_json_error(request)
     session.end_session()
     return get_json_error(request, redirect=reverse('bot-action'))
+
+
+@staff_member_required()
+def distribute_points(request):
+    if request.method != 'POST':
+        raise PermissionDenied
+    messages.add_message(request, messages.SUCCESS, 'Успешно')
+    BankRecord.distribute_points()
+    return get_json_response(request)
